@@ -6,10 +6,14 @@
 #include <errno.h>
 
 
-void errMsg() { }
+
+
+static void errMsg() {
+
+}
 
 template <typename T, typename... types> 
-void errMsg(const T& first, const types&... args) {
+static void errMsg(const T& first, const types&... args) {
     
     std::cout <<  stderr << first << strerror(errno) << std::endl;
     errMsg(args...);

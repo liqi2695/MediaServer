@@ -21,12 +21,16 @@ void TCPSocket::Bind(int fd) {
     }
 }
 
-int TCPSocket::Accept(int fd) {
+int TCPSocket::Accept(int fd, char* cliIP, int* cliPort) {
     socklen_t len = sizeof(clitaddr);
     bzero(&clitaddr, sizeof(clitaddr));
     int clifd = accept(fd, (struct sockaddr*)&clitaddr, &len);
     if(clifd < 0) {
         errMsg("accept error");
     }
+    
+    strcpy(cliIP, inet_ntoa(clitaddr.sin_addr));
+    *cliPort = ntohs(clitaddr.sin_port);
+
     return clifd;
 }

@@ -37,7 +37,7 @@ public:
         :ip(IP), port(Port) {}
     int createSocket() ;
     void Bind(int fd) ;
-    int Accept(int fd) ;
+    int Accept(int fd, char* cliIP, int* cliPort) ;
 
     //收发数据
     // void sendMsg(std::string &str) override;
