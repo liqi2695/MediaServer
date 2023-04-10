@@ -11,18 +11,18 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-//网络套接字的基类，可被TCP,UDP继承
-// class Socket {
-// private:
-//     //socket创建需要的变量
-// public:
-//     virtual int createSocket();
-//     virtual void Bind(int fd);
-//     virtual int Accept(int fd);
+// 网络套接字的基类，可被TCP,UDP继承
+class Socket {
+private:
+    //socket创建需要的变量
+public:
+    virtual int createSocket();
+    virtual void Bind(int fd);
+    virtual int Accept(int fd);
 
-//     // virtual void sendMsg(std::string &str);
-//     // virtual std::string recvMsg();
-// };
+    // virtual void sendMsg(std::string &str);
+    // virtual std::string recvMsg();
+};
 
 class TCPSocket {
 private:
