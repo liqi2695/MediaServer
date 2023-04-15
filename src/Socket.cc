@@ -1,36 +1,37 @@
 #include "Socket.h"
 #include "error_help.h"
 
+Socket::~Socket() {
+    close(_sockfd);
+}
 
-int TCPSocket::createSocket() {
-    int ret = socket(AF_INET, SOCK_STREAM, 0);
-    if(ret < 0) {
-        errMsg("create socket error");
+bool Socket::getTcpInfo(struct tcp_info* tcpin) const {
+    socklen_t len = sizeof(*tcpin);
+    bzero(tcpin, len);
+    return getsockopt(_sockfd, SOL_TCP, TCP_INFO, tcpin, &len);
+}
+
+void Socket::bindAddress(InetAddress& localaddr) {
+    struct sockaddr_in serveraddr = localaddr.getSockAddr();
+    if(bind(_sockfd, (struct sockaddr*)&serveraddr, sizeof(serveraddr)) < 0) {
+        errMsg("Socket bind error");
+    }
+} 
+
+void Socket::listenClient() {
+    if(listen(_sockfd, SOMAXCONN) < 0) {
+        errMsg("listen error");
+    }
+}
+
+
+int Socket::acceptCli(InetAddress* peeraddr) {
+    struct sockaddr_in cliaddr = peeraddr->getSockAddr();
+    socklen_t len = sizeof(cliaddr);
+    int ret = 0;
+    if( (ret = accept(_sockfd, (struct sockaddr*)&cliaddr, &len)) < 0) {
+        errMsg("Accept error");
     }
     return ret;
 }
 
-void TCPSocket::Bind(int fd) {
-    bzero(&servaddr, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    inet_pton(fd, ip, &servaddr.sin_addr);
-    servaddr.sin_port = htons(port);
-
-    if(bind(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
-        errMsg("bind error");
-    }
-}
-
-int TCPSocket::Accept(int fd, char* cliIP, int* cliPort) {
-    socklen_t len = sizeof(clitaddr);
-    bzero(&clitaddr, sizeof(clitaddr));
-    int clifd = accept(fd, (struct sockaddr*)&clitaddr, &len);
-    if(clifd < 0) {
-        errMsg("accept error");
-    }
-    
-    strcpy(cliIP, inet_ntoa(clitaddr.sin_addr));
-    *cliPort = ntohs(clitaddr.sin_port);
-
-    return clifd;
-}

@@ -8,42 +8,44 @@
 #include <sys/types.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include "Address.h"
 
-// 网络套接字的基类，可被TCP,UDP继承
+//这里为什么需要
+class InetAddress;
+
+/*不提供fd创建方法，所以创建UDP还是TCP由你决定*/
 class Socket {
-private:
-    //socket创建需要的变量
 public:
-    virtual int createSocket();
-    virtual void Bind(int fd);
-    virtual int Accept(int fd);
+    explicit Socket(int sockfd) : _sockfd(sockfd) { }
+    ~Socket();
 
-    // virtual void sendMsg(std::string &str);
-    // virtual std::string recvMsg();
+    int fd() const { return  _sockfd; }
+    bool getTcpInfo(struct tcp_info*) const;
+    
+
+    void bindAddress(InetAddress& localaddr);
+
+    void listenClient();
+
+    int acceptCli(InetAddress* peeraddr);
+
+    void shutDownWrite();
+
+
+
+private:
+    const int _sockfd;
+
+
 };
 
-class TCPSocket {
-private:
-    const char* ip;
-    uint16_t port;
-public:    
-    struct sockaddr_in servaddr;
-    struct sockaddr_in clitaddr;
 
-public:
-    TCPSocket(const char* IP, uint16_t Port)
-        :ip(IP), port(Port) {}
-    int createSocket() ;
-    void Bind(int fd) ;
-    int Accept(int fd, char* cliIP, int* cliPort) ;
 
-    //收发数据
-    // void sendMsg(std::string &str) override;
-    // std::string recvMsg() override;
 
-};
 
 
 

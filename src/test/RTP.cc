@@ -1,5 +1,5 @@
 #include "RTP.h"
-
+#include <iostream>
 
 
 
@@ -33,6 +33,8 @@ int rtpSendPacketOverUdp(int serverRtpSockfd, const std::string& ip, int16_t por
 
     int ret = sendto(serverRtpSockfd, &rtpPacket, dataSize + RTP_HEADER_SIZE, 0,
         (struct sockaddr*)&addr, sizeof(addr));
+    if(ret < 0)  { std::cout << "erro send" << std::endl;}
+    else {std::cout << "send buf" << std::endl;}
 
     rtpPacket.rtpHeader.seq = ntohs(rtpPacket.rtpHeader.seq); //转主机
     rtpPacket.rtpHeader.timestamp = ntohl(rtpPacket.rtpHeader.timestamp);
