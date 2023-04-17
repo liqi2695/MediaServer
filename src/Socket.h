@@ -39,8 +39,6 @@ public:
 
 private:
     const int _sockfd;
-
-
 };
 
 

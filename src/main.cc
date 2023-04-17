@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
 
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     Socket servsocket(fd);
+
     InetAddress address(port);
 
     servsocket.bindAddress(address);
@@ -16,5 +17,10 @@ int main(int argc, char* argv[])
     while(1) {
         InetAddress cliaddress;
         servsocket.acceptCli(&cliaddress);
+
+        
+
+
+
     }
 }
